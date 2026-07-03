@@ -70,7 +70,7 @@
   .scroll{overflow:visible;border:1px solid var(--line);border-radius:11px;background:var(--card)}
   table{border-collapse:separate;border-spacing:0;width:100%;min-width:760px}
   th,td{padding:7px 9px;font-size:13px;text-align:right;border-bottom:1px solid var(--line)}
-  thead th{position:sticky;top:var(--stick2,168px);background:var(--ink);color:#fff;font-weight:600;z-index:9;text-align:right}
+  thead th{position:sticky;top:var(--stick2,168px);background:var(--ink);color:#fff;font-weight:600;z-index:9;text-align:right;padding:4px 8px;font-size:12px;line-height:1.2}
   thead th:first-child{text-align:left;left:0;z-index:11}
   .rowlabel{text-align:left;position:sticky;left:0;background:var(--card);font-weight:500;z-index:2;border-right:1px solid var(--line);min-width:170px}
   tr.section td{background:var(--sec);font-weight:800;color:var(--ink);letter-spacing:.03em;font-size:15px;padding-top:11px;padding-bottom:11px}
@@ -159,7 +159,7 @@
     .readout .val{font-size:20px}
     .tools{gap:6px}
     .btn{font-size:12px;padding:8px 10px}
-    .scroll{overflow-x:auto}           /* スマホでは表だけ横スクロール（ページ全体は横に動かさない） */
+    /* スマホでも見出しを固定（PCと同じ）：横スクロール枠は使わずページごとスクロール */
     th,td{padding:7px 8px;font-size:12px}
     .rowlabel{min-width:132px}
     .card{padding:12px 12px}
@@ -195,6 +195,10 @@
 <div id="toast"></div>
 
 <script>
+// ===== 共有保存（全端末で同じデータにする／Googleドライブ経由） =====
+// このURLに保存・読込します。空にすると共有保存機能は無効（従来どおり端末内保存のみ）。
+const CLOUD_URL = "https://script.google.com/macros/s/AKfycbxqHhNNCK6aStIMFr1T0TIFPYdD_t5SiF7I_BqRb0flHtpIP147VP_RHlcBzgYlz8be/exec";
+
 const STORES=[
   {id:"own",name:"自社サイト",color:"var(--own)",code:"9:MS(S)"},
   {id:"rakuten",name:"楽天（SOUYI）",color:"var(--rakuten)",code:"1:RSS"},
@@ -215,7 +219,7 @@ const mem={};
 const FYK="pl_fy_v1";
 function loadFY(){ try{const v=localStorage.getItem(FYK);return v?JSON.parse(v):null;}catch(e){return mem[FYK]||null;} }
 let FY=loadFY()||{y:2026,m:7};   // 決算期の開始年・開始月（既定：2026年7月）
-function saveFY(){ try{localStorage.setItem(FYK,JSON.stringify(FY));}catch(e){mem[FYK]=FY;} }
+function saveFY(){ try{localStorage.setItem(FYK,JSON.stringify(FY));}catch(e){mem[FYK]=FY;} cloudScheduleSave(); }
 function calOf(i){ const idx=(FY.m-1)+i; return {y:FY.y+Math.floor(idx/12), m:(idx%12)+1}; } // 列i→暦年月
 function slotOf(cm){ return ((cm-FY.m)%12+12)%12; }                                        // 暦月→列
 function fyLabels(){ return Array.from({length:12},(_,i)=>{const c=calOf(i);return `${c.m}月`;}); }
@@ -242,24 +246,37 @@ const INPUTS=[
   {k:"av_access",label:"アクセス人数"},
   {k:"av_kokoku",label:"広告経由 広告費"},
 ];
-const SK="pl_store_data_v1";
-function load(){ try{const v=localStorage.getItem(SK);return v?JSON.parse(v):null;}catch(e){return mem[SK]||null;} }
-function persist(){ try{localStorage.setItem(SK,JSON.stringify(data));}catch(e){mem[SK]=data;} }
+// ===== 決算期（年）ごとにデータを分けて保存 =====
+// 旧バージョン（単年のみ）のキー。互換のため読み込み時の移行にのみ使用します。
+const SK_LEGACY="pl_store_data_v1", PK_LEGACY="pl_store_prev_v1";
+function loadJSON_(k){ try{const v=localStorage.getItem(k);return v?JSON.parse(v):null;}catch(e){return mem[k]||null;} }
+function fyKeyOf(fy){ return fy.y+"-"+fy.m; }
+const ADK="pl_store_alldata_v1", APK="pl_store_allprev_v1";
+let allData=loadJSON_(ADK)||{};
+let allPrev=loadJSON_(APK)||{};
+// 旧バージョンの単年データが残っていて、まだ新形式に移行前なら、現在の決算期のデータとして取り込む
+(function migrateLegacy_(){
+  const k=fyKeyOf(FY);
+  if(!allData[k]){ const legacy=loadJSON_(SK_LEGACY); if(legacy)allData[k]=legacy; }
+  if(!allPrev[k]){ const legacy=loadJSON_(PK_LEGACY); if(legacy)allPrev[k]=legacy; }
+})();
+// 指定の決算期キーに、全店舗×全項目の12ヶ月配列が存在するよう整える
+function ensureYear_(k){
+  allData[k]=allData[k]||{};
+  STORES.forEach(s=>{ allData[k][s.id]=allData[k][s.id]||{};
+    INPUTS.forEach(r=>{ const a=allData[k][s.id][r.k];
+      if(!Array.isArray(a)||a.length!==12) allData[k][s.id][r.k]=Array(12).fill(0); }); });
+  allPrev[k]=allPrev[k]||{};
+  STORES.forEach(s=>{ allPrev[k][s.id]=allPrev[k][s.id]||{};
+    INPUTS.forEach(r=>{ const a=allPrev[k][s.id][r.k];
+      if(!Array.isArray(a)||a.length!==12) allPrev[k][s.id][r.k]=Array(12).fill(0); }); });
+}
+ensureYear_(fyKeyOf(FY));
+function persist(){ try{localStorage.setItem(ADK,JSON.stringify(allData));}catch(e){mem[ADK]=allData;} cloudScheduleSave(); }
+function persistPrev(){ try{localStorage.setItem(APK,JSON.stringify(allPrev));}catch(e){mem[APK]=allPrev;} cloudScheduleSave(); }
+let data=allData[fyKeyOf(FY)];
+let prev=allPrev[fyKeyOf(FY)];
 
-let data=load()||{};
-// ensure every store has every field as a 12-length array (also migrates older saves)
-STORES.forEach(s=>{ data[s.id]=data[s.id]||{};
-  INPUTS.forEach(r=>{ const a=data[s.id][r.k];
-    if(!Array.isArray(a)||a.length!==12) data[s.id][r.k]=Array(12).fill(0); }); });
-
-// previous-year dataset (比較用・CSV取込で投入)
-const PK="pl_store_prev_v1";
-function loadPrev(){ try{const v=localStorage.getItem(PK);return v?JSON.parse(v):null;}catch(e){return mem[PK]||null;} }
-function persistPrev(){ try{localStorage.setItem(PK,JSON.stringify(prev));}catch(e){mem[PK]=prev;} }
-let prev=loadPrev()||{};
-STORES.forEach(s=>{ prev[s.id]=prev[s.id]||{};
-  INPUTS.forEach(r=>{ const a=prev[s.id][r.k];
-    if(!Array.isArray(a)||a.length!==12) prev[s.id][r.k]=Array(12).fill(0); }); });
 
 const yen=n=>{const v=Math.round(n||0);const s=v.toLocaleString("ja-JP");return v<0?`(¥${(-v).toLocaleString("ja-JP")})`:(v===0?"–":`¥${s}`);};
 const yenInput=v=>v?("¥"+Math.round(v).toLocaleString("ja-JP")):"";
@@ -277,8 +294,7 @@ try{ if(sessionStorage.getItem("pl_admin_on")==="1") isAdmin=true; }catch(e){}
 function applyMode(){
   document.body.classList.toggle("viewer",!isAdmin);
   document.querySelectorAll('.page input[data-k]').forEach(i=>{i.readOnly=!isAdmin;});
-  const y=document.getElementById("fy-year"),m=document.getElementById("fy-month");
-  if(y)y.disabled=!isAdmin; if(m)m.disabled=!isAdmin;
+  // 「決算期の開始」は閲覧者でも操作可（見る期を選ぶだけで、数字の入力はできません）
   const b=document.getElementById("authbtn"); if(b)b.textContent=isAdmin?"🔓 管理者・記入者（ログアウト）":"🔒 管理者・記入者ログイン";
 }
 const pct=n=>(!isFinite(n)||!n)?"–":((n*100).toFixed(1)+"%");
@@ -360,6 +376,7 @@ menu.innerHTML=`
         <span id="fy-range" style="font-size:12px;color:#9fb0c0"></span>
       </div>
     </div>
+    <div id="menu-cl-refresh" style="font-size:12px;color:#cfe0ea;cursor:pointer;display:inline-flex;align-items:center;gap:5px" title="共有保存された最新データを読み込みます">🔄 最新データを読み込む<span id="menu-cl-status" style="color:#8fa4b5"></span></div>
   </div>
   <div class="tiles">
     <button class="tile summary" data-go="summary"><div class="t">▶ サマリー</div><div class="d">全店の通期 売上・粗利・営業利益</div></button>
@@ -368,12 +385,21 @@ menu.innerHTML=`
   </div>`;
 main.appendChild(menu);
 menu.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>show(b.dataset.go));
+document.getElementById("menu-cl-refresh").onclick=()=>{
+  if(!CLOUD_URL){toast("共有保存URLが設定されていません");return;}
+  const st=document.getElementById("menu-cl-status");if(st)st.textContent="　読込中…";
+  cloudLoad(true).then(ok=>{ if(st)st.textContent=ok?"　済":""; });
+};
 // fiscal selector
 const fyY=document.getElementById("fy-year"),fyM=document.getElementById("fy-month");
 fyY.value=FY.y;fyM.value=FY.m;
 function syncFYrange(){document.getElementById("fy-range").textContent="（"+fyRangeText()+"）";}
 syncFYrange();
-function onFYchange(){ FY={y:+fyY.value,m:+fyM.value}; saveFY(); MONTHS=fyLabels(); syncFYrange(); refreshFiscal(); }
+function onFYchange(){
+  FY={y:+fyY.value,m:+fyM.value}; saveFY(); MONTHS=fyLabels(); syncFYrange();
+  const k=fyKeyOf(FY); ensureYear_(k); data=allData[k]; prev=allPrev[k];
+  refreshFiscal();
+}
 fyY.onchange=onFYchange; fyM.onchange=onFYchange;
 // rebuild tables & period labels after a fiscal change
 function refreshFiscal(){
@@ -590,7 +616,6 @@ STORES.forEach(s=>{
       <button class="btn" data-tpl="${s.id}">取込テンプレCSV</button>
       <button class="btn warn edit-only" data-clear="${s.id}">この店舗を全消去</button>
     </div>
-    <div class="hint">青い数字のセルが入力欄です。入力すると自動保存され、合計・利益が即時に再計算されます。「CSV取込」でネクストエンジンの売上情報CSVなどを読み込めます。</div>
     <div class="sheet-head">
       <div><div class="name"><span class="dot" style="background:${s.color}"></span>${fmtName(s.name)} ― 月次損益</div>
       <div style="font-size:12px;font-weight:800;color:var(--muted);letter-spacing:.06em;margin-top:1px">${s.code}</div>
@@ -1343,6 +1368,89 @@ window.addEventListener("resize",setStick);
 window.addEventListener("load",setStick);
 setStick();
 
+// ===== ☁ 共有保存（全端末で同じデータにする／Googleドライブ経由） =====
+const CLK="pl_cloud_on_v1", CLSK="pl_cloud_last_v1";
+function cloudGet(k){ try{return localStorage.getItem(k);}catch(e){return mem[k]||null;} }
+function cloudSet(k,v){ try{localStorage.setItem(k,v);}catch(e){mem[k]=v;} }
+let cloudSaveTimer=null, cloudLoading=false;
+// アプリが開いたとき／読込ボタン：共有データ（JSONP・CORS制限を受けない）を取得してローカルへ反映
+function cloudLoad(manual){
+  return new Promise(resolve=>{
+    if(!CLOUD_URL){ if(manual)toast("共有保存URLが設定されていません"); resolve(false); return; }
+    if(cloudLoading){ resolve(false); return; }
+    cloudLoading=true;
+    const st=document.getElementById("cl-status");
+    if(manual&&st)st.textContent="読込中…";
+    const cbName="__cloudCb"+Date.now();
+    const timer=setTimeout(()=>{ finish(false,"タイムアウトしました"); },12000);
+    let script;
+    function finish(ok,msg){
+      clearTimeout(timer); cloudLoading=false;
+      try{ delete window[cbName]; }catch(e){}
+      if(script&&script.parentNode)script.parentNode.removeChild(script);
+      if(st)st.textContent=ok?("最終読込："+new Date().toLocaleString("ja-JP")):(msg||"読込に失敗しました");
+      if(manual)toast(ok?"共有データを読み込みました":("読込に失敗しました"+(msg?"："+msg:"")));
+      resolve(ok);
+    }
+    window[cbName]=function(res){
+      try{
+        const state=res&&res.state;
+        if(!state || (!state.allData && !state.data)){ finish(false,"共有データはまだありません"); return; }
+        const mergeArr=(dst,src)=>{ Object.keys(src).forEach(sid=>{ if(dst[sid]){ Object.keys(src[sid]).forEach(k=>{
+          const a=src[sid][k]; if(Array.isArray(a)&&a.length===12) dst[sid][k]=a.map(v=>+v||0); }); } }); };
+        if(state.allData){
+          // 新形式：決算期ごとに分かれたデータをまとめて取り込む
+          Object.keys(state.allData).forEach(k=>{ ensureYear_(k); mergeArr(allData[k],state.allData[k]); });
+          if(state.allPrev) Object.keys(state.allPrev).forEach(k=>{ ensureYear_(k); mergeArr(allPrev[k],state.allPrev[k]); });
+        } else if(state.data){
+          // 旧形式（単年のみ）：保存時点の決算期（state.fy、無ければ現在の決算期）として取り込む
+          const k=(state.fy&&state.fy.y&&state.fy.m)?fyKeyOf({y:+state.fy.y,m:+state.fy.m}):fyKeyOf(FY);
+          ensureYear_(k); mergeArr(allData[k],state.data);
+          if(state.prev) mergeArr(allPrev[k],state.prev);
+        }
+        persistLocalOnly_(); persistPrevLocalOnly_();
+        // 表示中の決算期のポインタを最新の中身に合わせ直す
+        ensureYear_(fyKeyOf(FY)); data=allData[fyKeyOf(FY)]; prev=allPrev[fyKeyOf(FY)];
+        MONTHS=fyLabels();
+        STORES.forEach(s=>{ buildTable(s.id); const p=document.getElementById("per-"+s.id); if(p)p.textContent="決算期："+fyRangeText(); });
+        if(typeof syncFYrange==="function")syncFYrange();
+        if(document.getElementById("pg-summary")&&document.getElementById("pg-summary").classList.contains("on"))renderSummary();
+        if(document.getElementById("pg-analysis")&&document.getElementById("pg-analysis").classList.contains("on"))renderAnalysis();
+        finish(true);
+      }catch(err){ finish(false,"データの解析に失敗しました"); }
+    };
+    script=document.createElement("script");
+    script.src=CLOUD_URL+(CLOUD_URL.indexOf("?")>=0?"&":"?")+"callback="+cbName+"&t="+Date.now();
+    script.onerror=()=>finish(false,"通信に失敗しました");
+    document.body.appendChild(script);
+  });
+}
+// 反映専用（読込結果を書き戻す際に再度クラウド保存を予約しないための内部用）
+function persistLocalOnly_(){ try{localStorage.setItem(ADK,JSON.stringify(allData));}catch(e){mem[ADK]=allData;} }
+function persistPrevLocalOnly_(){ try{localStorage.setItem(APK,JSON.stringify(allPrev));}catch(e){mem[APK]=allPrev;} }
+// 入力時：共有保存が有効なら、少し待ってからまとめてクラウドへ保存（連続入力での連打を防止）
+function cloudScheduleSave(){
+  if(cloudGet(CLK)!=="1")return;
+  clearTimeout(cloudSaveTimer);
+  cloudSaveTimer=setTimeout(()=>cloudSaveNow(false),1500);
+}
+async function cloudSaveNow(manual){
+  if(!CLOUD_URL){ if(manual)toast("共有保存URLが設定されていません"); return; }
+  const st=document.getElementById("cl-status");
+  if(manual&&st)st.textContent="保存中…";
+  try{
+    await fetch(CLOUD_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},
+      body:JSON.stringify({action:"save",allData,allPrev,fy:FY})});
+    const now=new Date().toLocaleString("ja-JP");
+    cloudSet(CLSK,now);
+    if(st)st.textContent="最終保存："+now;
+    if(manual)toast("共有保存しました");
+  }catch(e){
+    if(st)st.textContent="共有保存に失敗しました";
+    if(manual)toast("共有保存に失敗しました");
+  }
+}
+
 // ===== データ自動連携（連携URLから取得） =====
 const SUK="pl_sync_url_v1", SAK="pl_sync_auto_v1", SLK="pl_sync_last_v1";
 function syncGet(k){ try{return localStorage.getItem(k);}catch(e){return mem[k]||null;} }
@@ -1383,6 +1491,8 @@ function openSync(){
   document.getElementById("sy-url").value=syncGet(SUK)||"";
   document.getElementById("sy-auto").checked=(syncGet(SAK)==="1");
   const last=syncGet(SLK); document.getElementById("sy-status").textContent=last?("最終同期："+last):"未同期";
+  document.getElementById("cl-on").checked=(cloudGet(CLK)==="1");
+  const clast=cloudGet(CLSK); document.getElementById("cl-status").textContent=clast?("最終保存："+clast):(CLOUD_URL?"未保存":"共有保存URLが未設定です");
   document.getElementById("sov").style.display="block";
 }
 (function(){
@@ -1391,6 +1501,19 @@ function openSync(){
   sov.innerHTML=`<div class="modal" style="max-width:560px">
     <div class="mh"><h3>🔄 データ自動連携</h3><span class="x" id="sy-x">×</span></div>
     <div class="mb">
+      <div style="background:#eef4f7;border:1px solid #cdd9e0;border-radius:10px;padding:12px 14px;margin-bottom:16px">
+        <div style="font-weight:800;color:#1f6f8b;margin-bottom:6px">☁ 共有保存（PC・スマホで同じデータに）</div>
+        <div style="font-size:12px;color:var(--ink-soft);line-height:1.6;margin-bottom:10px">入力すると自動でクラウド（Googleドライブ）へ保存され、同じURLを開いた他の端末にも同じ数字が表示されます。保存先のURLはこのファイルにあらかじめ埋め込まれています。</div>
+        <label style="display:flex;align-items:center;gap:7px;font-size:13px;margin:4px 0 8px;cursor:pointer">
+          <input type="checkbox" id="cl-on"> 共有保存を使う（入力すると自動保存、開くと自動で最新を読込）
+        </label>
+        <div id="cl-status" style="font-size:12px;color:var(--muted);margin:2px 0 10px">未保存</div>
+        <div class="tools" style="margin-bottom:0">
+          <button class="btn edit-only" id="cl-save" style="border-color:#1f6f8b;color:#1f6f8b;font-weight:700">今すぐ共有保存</button>
+          <button class="btn" id="cl-load">今すぐ読み込む</button>
+        </div>
+      </div>
+
       <div style="font-size:12px;color:var(--muted);margin-bottom:12px">連携URL（公開したCSV/GASのURL）を設定すると、そのデータを取り込みます。「自動同期」をONにすると、ページを開くたびに自動で最新に更新します。店舗列・年月・各項目の列があるCSVを想定しています（通常のCSV取込と同じ形式）。</div>
 
       <div style="background:#eef6f5;border:1px solid #cfe6e2;border-radius:10px;padding:12px 14px;margin-bottom:14px">
@@ -1424,11 +1547,16 @@ function openSync(){
   document.getElementById("sy-close").onclick=close;
   document.getElementById("sy-savecfg").onclick=()=>{saveCfg();toast("連携設定を保存しました");};
   document.getElementById("sy-save").onclick=()=>{saveCfg();syncNow(true);};
+  document.getElementById("cl-on").onchange=e=>{ cloudSet(CLK,e.target.checked?"1":"0"); toast(e.target.checked?"共有保存をONにしました":"共有保存をOFFにしました"); };
+  document.getElementById("cl-save").onclick=()=>cloudSaveNow(true);
+  document.getElementById("cl-load").onclick=()=>cloudLoad(true);
   sov.addEventListener("click",e=>{if(e.target===sov)close();});
 })();
 
 applyMode();
 show("menu");
-// ページを開いたら、自動同期がONなら取得
+// ページを開いたら、共有保存URLが設定されていれば（ログイン状態やチェックの有無に関係なく）常に最新データを読込。
+// ※保存（書き込み）は引き続き「共有保存を使う」がONの端末のみ行います。
+if(CLOUD_URL){ setTimeout(()=>cloudLoad(false),250); }
 if(syncGet(SAK)==="1" && (syncGet(SUK)||"").trim()){ setTimeout(()=>syncNow(false),300); }
 </script>
