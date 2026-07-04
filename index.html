@@ -12,8 +12,8 @@
 <style>
   :root{
     --ink:#16202e; --ink-soft:#3a4a5e; --line:#dfe3df; --line-strong:#c4cbc4;
-    --paper:#f5f6f3; --card:#ffffff; --muted:#76817a;
-    --pos:#0f766e; --neg:#b4231f; --accent:#1f6f8b;
+    --paper:#eef3f9; --card:#ffffff; --muted:#76817a;
+    --pos:#06c755; --neg:#e02f2f; --accent:#2b7de0; --line-green:#2b7de0;
     --rakuten:#bf0000; --amazon:#d97706; --yahoo:#c40d0d; --own:#3f7a34;
     --sec:#eef1ee;
     --mono:"SFMono-Regular",ui-monospace,Menlo,Consolas,monospace;
@@ -22,35 +22,38 @@
   *{box-sizing:border-box}
   html,body{margin:0}
   body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5;-webkit-text-size-adjust:100%}
-  header{position:sticky;top:0;z-index:20;background:var(--ink);color:#fff;border-bottom:3px solid var(--accent)}
+  header{position:sticky;top:0;z-index:20;background:var(--line-green);color:#fff;border-bottom:3px solid #14507a}
   .bar{display:flex;align-items:center;gap:14px;padding:13px 20px 11px}
-  .brandlogo{height:40px;width:auto;max-width:210px;flex:0 0 auto;display:block}
+  .brandlogo{height:26px;width:auto;max-width:140px;flex:0 0 auto;display:block;filter:brightness(0) drop-shadow(1px 0 0 #2b7de0) drop-shadow(-1px 0 0 #2b7de0) drop-shadow(0 1px 0 #2b7de0) drop-shadow(0 -1px 0 #2b7de0)}
   .logo{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#2f7d95,#0f766e);
     display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;color:#fff;
     box-shadow:0 3px 12px rgba(0,0,0,.28);flex:0 0 auto;letter-spacing:.02em}
   .brand{display:flex;flex-direction:column;gap:3px;min-width:0}
   .company{font-size:13px;font-weight:700;letter-spacing:.06em;color:#eaf2f8;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
-  .dept{font-size:11px;font-weight:700;letter-spacing:.05em;background:var(--accent);color:#fff;padding:2px 10px;border-radius:20px;white-space:nowrap}
+  .dept{font-size:11px;font-weight:800;letter-spacing:.05em;background:#fff;color:var(--line-green);padding:2px 10px;border-radius:20px;white-space:nowrap}
   .titles{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
   .bar h1{margin:0;font-size:17px;font-weight:700;letter-spacing:.04em;color:#fff}
-  .bar .sub{font-size:11px;color:#9fb0c0;letter-spacing:.06em;font-weight:400}
+  .bar .sub{font-size:11px;color:#eef5ff;letter-spacing:.06em;font-weight:400}
   .hbtn{margin-left:auto;appearance:none;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.10);
     color:#fff;font-family:var(--sans);font-size:12px;font-weight:700;padding:8px 13px;border-radius:9px;cursor:pointer;white-space:nowrap;flex:0 0 auto}
   .hbtn:hover{background:rgba(255,255,255,.2)}
+  .homebtn{margin-left:auto;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.55)}
+  .homebtn:hover{background:rgba(255,255,255,.3);border-color:#fff}
+  .bar #authbtn{margin-left:8px}
   .viewer .edit-only{display:none!important}
-  nav{display:flex;gap:2px;overflow-x:auto;padding:0 12px 0}
-  nav button{appearance:none;border:0;background:transparent;color:#aebccb;font-family:var(--sans);
-    font-size:13px;font-weight:600;padding:9px 14px;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:.15s}
-  nav button:hover{color:#fff}
-  nav button.on{color:#fff;border-bottom-color:#fff}
-  main{max-width:1180px;margin:0 auto;padding:22px 16px 80px}
+  nav{display:flex;flex-wrap:wrap;gap:7px;padding:9px 14px 11px}
+  nav button{appearance:none;border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.15);color:#fff;font-family:var(--sans);
+    font-size:14.5px;font-weight:700;padding:9px 16px;cursor:pointer;border-radius:8px;white-space:nowrap;transition:.15s;line-height:1.2;letter-spacing:.02em}
+  nav button:hover{background:rgba(255,255,255,.3);color:#fff;border-color:#fff}
+  nav button.on{background:#fff;color:#1e6091;border-color:#fff;box-shadow:0 3px 10px rgba(0,0,0,.18)}
+  main{max-width:none;margin:0;padding:22px 20px 80px}
   .page{display:none;animation:fade .25s ease}
   .page.on{display:block}
   @keyframes fade{from{opacity:0}to{opacity:1}}
   @media (prefers-reduced-motion:reduce){.page{animation:none}}
 
   /* menu */
-  .menu-hero{background:var(--ink);color:#fff;border-radius:14px;padding:26px 26px 22px;margin-bottom:20px}
+  .menu-hero{background:var(--line-green);color:#fff;border-radius:14px;padding:26px 26px 22px;margin-bottom:20px}
   .menu-hero h2{margin:0 0 4px;font-size:22px;letter-spacing:.02em}
   .menu-hero p{margin:0;color:#9fb0c0;font-size:13px;max-width:none;text-align:justify;text-justify:inter-character;line-height:1.7}
   .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
@@ -74,21 +77,36 @@
   .chart-title{font-size:13px;font-weight:700;margin-bottom:10px;color:var(--ink)}
   .pos{color:var(--pos)} .neg{color:var(--neg)}
   .paren{font-size:.72em;font-weight:600}
+  .tip{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;background:#8fa6ad;color:#fff;font-size:10px;font-weight:700;margin-left:5px;cursor:default;vertical-align:middle;position:relative}
+  .htip{cursor:default;position:relative}
+  .tip:hover::after,.htip:hover::after{content:attr(data-tip);position:absolute;left:50%;bottom:calc(100% + 7px);transform:translateX(-50%);background:#1f2a33;color:#fff;font-weight:400;font-size:11px;line-height:1.4;white-space:nowrap;padding:5px 9px;border-radius:6px;box-shadow:0 4px 14px rgba(0,0,0,.25);z-index:40}
+  .tip:hover::before,.htip:hover::before{content:"";position:absolute;left:50%;bottom:calc(100% + 2px);transform:translateX(-50%);border:5px solid transparent;border-top-color:#1f2a33;z-index:40}
 
   .scroll{overflow:visible;border:1px solid var(--line);border-radius:11px;background:var(--card)}
   table{border-collapse:separate;border-spacing:0;width:100%;min-width:760px}
   th,td{padding:7px 9px;font-size:13px;text-align:right;border-bottom:1px solid var(--line)}
-  thead th{position:sticky;top:var(--stick2,168px);background:var(--ink);color:#fff;font-weight:600;z-index:9;text-align:right;padding:4px 8px;font-size:12px;line-height:1.2}
+  .scroll td{border-bottom:1px solid #79ade4}
+  .scroll td.rowlabel{border-bottom:0}
+  .scroll tr.sepline td{border-bottom:2px solid #79ade4}
+  .scroll tr.sepline td.rowlabel{border-bottom:2px solid #79ade4}
+  #an-table thead th{top:0}
+  #an-table td{border-bottom:1px solid #79ade4}
+  thead th{position:sticky;top:var(--stick2,168px);background:var(--line-green);color:#fff;font-weight:600;z-index:9;text-align:right;padding:4px 8px;font-size:12px;line-height:1.2;white-space:nowrap}
   thead th:first-child{text-align:left;left:0;z-index:11}
-  .rowlabel{text-align:left;position:sticky;left:0;background:var(--card);font-weight:500;z-index:2;border-right:1px solid var(--line);min-width:170px}
+  .rowlabel{text-align:left;position:sticky;left:0;background:var(--card);font-weight:500;z-index:2;border-right:1px solid #79ade4;min-width:170px}
   tr.section td{background:var(--sec);font-weight:800;color:var(--ink);letter-spacing:.03em;font-size:15px;padding-top:11px;padding-bottom:11px}
   tr.section .rowlabel{background:var(--sec)}
   tr.sub td{background:#f4f6f4;font-weight:700} tr.sub .rowlabel{background:#f4f6f4;font-weight:700}
-  tr.gp td{background:#eaf3ea} tr.gp .rowlabel{background:#eaf3ea;font-weight:700}
-  tr.op td{background:#fdeee4} tr.op .rowlabel{background:#fdeee4;font-weight:800}
+  tr.gp td{background:#eaf3ea} tr.gp .rowlabel{background:#eaf3ea;font-weight:700;padding-left:calc(9px + 1em)}
+  tr.op td{background:#fdeee4} tr.op .rowlabel{background:#fdeee4;font-weight:500}
+  tr.kpin td{background:#eef4f7} tr.kpin .rowlabel{background:#eef4f7;font-weight:500}
   tr.kpi td{background:#eef4f7} tr.kpi .rowlabel{background:#eef4f7;font-weight:700}
+  tr.in .rowlabel{padding-left:calc(9px + 1em)}
+  tr.kpip .rowlabel{font-weight:500;padding-left:calc(9px + 1em)}
   td.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
-  td.total{font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:700;border-left:2px solid var(--line-strong);background:#fbfcfb}
+  td.total{font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:700;border-left:2px solid #79ade4;background:#fbfcfb}
+  .scroll thead th:last-child{border-left:2px solid rgba(255,255,255,.45)}
+  .scroll tr.section td:last-child{border-left:2px solid #79ade4}
   input{width:100%;border:1px solid transparent;background:transparent;text-align:right;font-family:var(--mono);
     font-variant-numeric:tabular-nums;font-size:13px;color:#0a3d91;padding:3px 4px;border-radius:5px}
   input:hover{border-color:var(--line)}
@@ -100,23 +118,27 @@
     font-family:var(--sans);font-size:13px;font-weight:600;padding:8px 14px;border-radius:8px;cursor:pointer;transition:.15s}
   .btn:hover{background:#eef1ee}
   .btn.warn{color:var(--neg);border-color:#e3bdbb}
-  .subtab.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .btn.btn-cloud{background:#e53935;border-color:#e53935;color:#fff}
+  .btn.btn-cloud:hover{background:#2b7de0;border-color:#2b7de0;color:#fff}
+  #menu-cl-refresh:hover{background:#d6e6f8!important;color:#14507a!important}
+  .subtab.on{background:var(--line-green);color:#fff;border-color:var(--line-green)}
   .hint{font-size:12px;color:var(--muted);margin-top:6px}
 
   /* summary */
   .sumcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:18px}
   .sc{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:14px 16px}
-  .sc .k{font-size:12px;color:var(--muted)} .sc .v{font-size:22px;font-weight:800;font-family:var(--mono);font-variant-numeric:tabular-nums;margin-top:3px}
-  .sumtable td.store{font-weight:700;text-align:left;cursor:pointer;color:var(--accent)}
+  .sc .k{font-size:12px;color:#1b1f24;font-weight:600} .sc .v{font-size:22px;font-weight:800;font-family:var(--mono);font-variant-numeric:tabular-nums;margin-top:3px}
+  .sumtable td.store{font-weight:700;text-align:left;cursor:pointer;color:#1b1f24}
+  .sumtable td{border-bottom:1px solid #79ade4}
   .sumtable td.store:hover{text-decoration:underline}
 
   /* guide */
   .guide{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 24px 22px;max-width:860px}
   .guide h3{color:var(--ink);border-bottom:2px solid var(--sec);padding-bottom:6px;margin:22px 0 10px;font-size:15px}
   .guide p,.guide li{font-size:13px;color:var(--ink-soft)} .guide code{background:var(--sec);padding:1px 6px;border-radius:5px;font-size:12px}
-  .back{font-size:12px;color:var(--ink);cursor:pointer;display:inline-block;margin-bottom:12px;
-    border:1px solid var(--line-strong);background:var(--card);padding:7px 14px;border-radius:9px;font-weight:600;transition:.15s}
-  .back:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .back{font-size:12px;color:#fff;cursor:pointer;display:inline-block;margin-bottom:12px;
+    border:1px solid #1b1f24;background:#1b1f24;padding:7px 14px;border-radius:9px;font-weight:600;transition:.15s}
+  .back:hover{background:#fff;color:#1b1f24;border-color:#1b1f24}
 
   #toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);opacity:0;
     background:var(--ink);color:#fff;padding:10px 18px;border-radius:9px;font-size:13px;transition:.25s;z-index:50;pointer-events:none}
@@ -126,7 +148,7 @@
   #ov{position:fixed;inset:0;background:rgba(16,22,30,.55);display:none;z-index:60;padding:24px;overflow:auto}
   #ov.show{display:block}
   .modal{max-width:760px;margin:24px auto;background:var(--card);border-radius:14px;box-shadow:0 24px 60px rgba(0,0,0,.3);overflow:hidden}
-  .modal .mh{background:var(--ink);color:#fff;padding:15px 20px;display:flex;align-items:center;justify-content:space-between}
+  .modal .mh{background:var(--line-green);color:#fff;padding:15px 20px;display:flex;align-items:center;justify-content:space-between}
   .modal .mh h3{margin:0;font-size:16px} .modal .mh .x{cursor:pointer;font-size:20px;color:#9fb0c0}
   .modal .mb{padding:18px 20px}
   .modal .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
@@ -148,19 +170,21 @@
   /* ===== スマートフォン最適化 ===== */
   @media (max-width:720px){
     .bar{flex-wrap:wrap;gap:10px;padding:10px 14px}
-    .brandlogo{height:30px;max-width:150px}
+    .brandlogo{height:21px;max-width:105px}
     .company{font-size:11px;gap:7px}
     .dept{font-size:10px;padding:2px 8px}
     .bar h1{font-size:15px}
     .bar .sub{font-size:10px}
     .hbtn{margin-left:auto;font-size:11px;padding:7px 10px}
     nav{padding:0 8px}
-    #nav button{font-size:13px;padding:9px 10px}
-    main{padding:14px 10px 70px}
+    #nav button{font-size:13.5px;padding:8px 13px}
+    main{padding:14px 12px 70px}
+    .bar{padding:11px 12px 9px} nav{padding:8px 8px 10px;flex-wrap:nowrap;overflow-x:auto}
     .menu-hero{padding:16px 15px 15px;border-radius:12px;margin-bottom:16px}
     .menu-hero h2{font-size:18px}
     .menu-hero p{font-size:12px;line-height:1.6}
     .tiles{grid-template-columns:1fr;gap:10px}
+    .sumcards{grid-template-columns:1fr 1fr;gap:10px}
     .sheet-head{gap:10px;margin-bottom:12px}
     .name{font-size:15px}
     .readout{margin-left:0}
@@ -178,7 +202,7 @@
     .pv table{min-width:520px}
   }
   @media (max-width:420px){
-    .brandlogo{height:26px;max-width:120px}
+    .brandlogo{height:19px;max-width:88px}
     .company{font-size:10px}
     .hbtn{font-size:10px;padding:6px 8px}
     .menu-hero h2{font-size:16px}
@@ -194,6 +218,7 @@
       <div class="company">ソウイジャパン株式会社<span class="dept">ECモール事業部</span></div>
       <div class="titles"><h1>EC事業部　各モール店舗別 損益表</h1><span class="sub">全12店舗 ＋ 通期サマリー</span></div>
     </div>
+    <button class="hbtn homebtn" id="homebtn">◀ メニューに戻る</button>
     <button class="hbtn" id="authbtn">🔒 ログイン</button>
   </div>
   <nav id="nav"></nav>
@@ -239,14 +264,15 @@ const INPUTS=[
   {k:"uriage",label:"売上高"},
   {k:"soryoIn",label:"売上高（先月比増額）"},
   {k:"genka",label:"商品原価"},
-  {k:"tesuryo",label:"モール手数料"},
-  {k:"point",label:"ポイント原資・クーポン"},
+  {k:"tesuryoRate",label:"モール手数料率％"},
+  {k:"point",label:"ポイント・クーポン"},
   {k:"kessai",label:"決済手数料"},
-  {k:"hasso",label:"発送費（配送実費）"},
-  {k:"agency",label:"代理店運営手数料"},
-  {k:"kokoku",label:"広告費（RPP/スポンサー/Y!広告等）"},
+  {k:"hasso",label:"発送費（実費）"},
+  {k:"agency",label:"代理店・手数料"},
+  {k:"kokoku",label:"広告費・RPP"},
   {k:"promo",label:"その他販促費"},
   {k:"kensu",label:"件数"},
+  {k:"access",label:"アクセス数"},
   {k:"fav",label:"お気に入り登録数"},
   {k:"review",label:"商品レビュー数"},
   {k:"av_uriage",label:"広告経由 売上"},
@@ -291,8 +317,10 @@ const yenInput=v=>v?("¥"+Math.round(v).toLocaleString("ja-JP")):"";
 const cntInput=v=>v?Math.round(v).toLocaleString("ja-JP"):"";
 // 増額専用：0は¥0、マイナスは −¥（色は赤）
 const yenInc=n=>{const v=Math.round(n||0);if(v===0)return "¥0";return v<0?("−¥"+(-v).toLocaleString("ja-JP")):("¥"+v.toLocaleString("ja-JP"));};
-const COUNT_FIELDS=new Set(["kensu","fav","review","av_kensu","av_access"]);
-const inFmt=(k,v)=>COUNT_FIELDS.has(k)?cntInput(v):yenInput(v);
+const COUNT_FIELDS=new Set(["kensu","access","fav","review","av_kensu","av_access"]);
+const RATE_FIELDS=new Set(["tesuryoRate"]);
+const rateInput=v=>v?(String(v)+"%"):"";
+const inFmt=(k,v)=>RATE_FIELDS.has(k)?rateInput(v):COUNT_FIELDS.has(k)?cntInput(v):yenInput(v);
 // ===== 管理者ログイン（簡易ロック） =====
 // 既定：ID「souyijapanec」／パスワード「souyi2026」。
 const ADMIN_HASH=["76b8e97b"];
@@ -319,7 +347,9 @@ const stripParen=n=>String(n).replace(/[（(][^（()）]*[)）]/g,'').trim();
 function metricsD(ds,sid,m){
   const d=ds[sid];const g=k=>(+d[k][m]||0);
   const sales=g("uriage");
-  const vc=g("genka")+g("tesuryo")+g("point")+g("kessai")+g("hasso")+g("agency");
+  const tesuryoRate=(d["tesuryoRate"]?(+d["tesuryoRate"][m]||0):0);
+  const tesuryo=sales*tesuryoRate/100;   // モール手数料＝売上高×率％
+  const vc=g("genka")+tesuryo+g("point")+g("kessai")+g("hasso")+g("agency");
   const gp=sales-vc;
   const ad=g("kokoku")+g("promo");
   const op=gp-ad;
@@ -332,18 +362,20 @@ function metricsD(ds,sid,m){
   const fav=fv(m), review=rv(m);
   const favInc=m>0?fv(m)-fv(m-1):0, reviewInc=m>0?rv(m)-rv(m-1):0;
   const gg=k=>(d[k]?(+d[k][m]||0):0);
-  const avU=gg("av_uriage"), avK=gg("av_kensu"), avA=gg("av_access"), avKok=gg("av_kokoku");
+  const avU=gg("av_uriage"), avK=gg("av_kensu"), avA=gg("av_access"), avKok=g("kokoku");
   const avCvr=avA?avK/avA:0, avAov=avK?avU/avK:0, avAdRate=avU?avKok/avU:0, avRoas=avKok?avU/avKok:0;
-  return {sales,vc,gp,ad,op,kensu,fav,review,favInc,reviewInc,uriageInc,
+  const access=g("access");
+  const storeCvr=access?kensu/access:0;   // 転換率（全店舗）＝件数÷アクセス数
+  return {sales,vc,gp,ad,op,kensu,access,storeCvr,fav,review,favInc,reviewInc,uriageInc,tesuryo,tesuryoRate,
     avU,avK,avA,avKok,avCvr,avAov,avAdRate,avRoas,
     gpRate:sales?gp/sales:0, opRate:sales?op/sales:0, adRate:sales?ad/sales:0,
     roas:g("kokoku")?sales/g("kokoku"):0, aov:kensu?sales/kensu:0};
 }
 function metrics(sid,m){ return metricsD(data,sid,m); }
 function annual(sid){
-  let a={sales:0,vc:0,gp:0,ad:0,op:0,kokoku:0,kensu:0,favInc:0,reviewInc:0,uriageInc:0,avU:0,avK:0,avA:0,avKok:0};
-  for(let m=0;m<12;m++){const x=metrics(sid,m);a.sales+=x.sales;a.vc+=x.vc;a.gp+=x.gp;a.ad+=x.ad;a.op+=x.op;a.kokoku+=(+data[sid].kokoku[m]||0);a.kensu+=(+data[sid].kensu[m]||0);a.favInc+=x.favInc;a.reviewInc+=x.reviewInc;a.uriageInc+=x.uriageInc;a.avU+=x.avU;a.avK+=x.avK;a.avA+=x.avA;a.avKok+=x.avKok;}
-  a.gpRate=a.sales?a.gp/a.sales:0;a.opRate=a.sales?a.op/a.sales:0;a.adRate=a.sales?a.ad/a.sales:0;a.roas=a.kokoku?a.sales/a.kokoku:0;a.aov=a.kensu?a.sales/a.kensu:0;
+  let a={sales:0,vc:0,gp:0,ad:0,op:0,kokoku:0,kensu:0,access:0,tesuryo:0,favInc:0,reviewInc:0,uriageInc:0,avU:0,avK:0,avA:0,avKok:0};
+  for(let m=0;m<12;m++){const x=metrics(sid,m);a.sales+=x.sales;a.vc+=x.vc;a.gp+=x.gp;a.ad+=x.ad;a.op+=x.op;a.kokoku+=(+data[sid].kokoku[m]||0);a.kensu+=(+data[sid].kensu[m]||0);a.access+=(+data[sid].access[m]||0);a.tesuryo+=x.tesuryo;a.favInc+=x.favInc;a.reviewInc+=x.reviewInc;a.uriageInc+=x.uriageInc;a.avU+=x.avU;a.avK+=x.avK;a.avA+=x.avA;a.avKok+=x.avKok;}
+  a.gpRate=a.sales?a.gp/a.sales:0;a.opRate=a.sales?a.op/a.sales:0;a.adRate=a.sales?a.ad/a.sales:0;a.roas=a.kokoku?a.sales/a.kokoku:0;a.aov=a.kensu?a.sales/a.kensu:0;a.storeCvr=a.access?a.kensu/a.access:0;
   a.avCvr=a.avA?a.avK/a.avA:0;a.avAov=a.avK?a.avU/a.avK:0;a.avAdRate=a.avU?a.avKok/a.avU:0;a.avRoas=a.avKok?a.avU/a.avKok:0;
   return a;
 }
@@ -361,6 +393,7 @@ PAGES.forEach(p=>{
   const b=document.createElement("button");b.innerHTML=fmtName(p.label);b.dataset.go=p.id;
   b.onclick=()=>show(p.id);nav.appendChild(b);
 });
+{const hb=document.getElementById("homebtn"); if(hb)hb.onclick=()=>show("menu");}
 
 function show(id){
   document.querySelectorAll(".page").forEach(el=>el.classList.toggle("on",el.id==="pg-"+id));
@@ -383,10 +416,10 @@ menu.innerHTML=`
         <span style="font-size:13px;font-weight:700">決算期の開始</span>
         <select id="fy-year" style="padding:6px 8px;border-radius:8px;border:0;font-family:var(--sans)">${yrOpts}</select>
         <select id="fy-month" style="padding:6px 8px;border-radius:8px;border:0;font-family:var(--sans)">${moOpts}</select>
-        <span id="fy-range" style="font-size:12px;color:#9fb0c0"></span>
+        <span id="fy-range" style="font-size:12px;color:#14507a;background:#d6e6f8;padding:3px 12px;border-radius:20px;font-weight:700;letter-spacing:.02em;display:inline-block"></span>
       </div>
+      <span id="menu-cl-refresh" style="margin-left:auto;font-size:12px;color:#fff;background:#e53935;padding:6px 14px;border-radius:20px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;font-weight:700" title="共有保存された最新データを読み込みます">🔄 最新データを読み込む<span id="menu-cl-status" style="color:#ffe0e0;font-weight:400"></span></span>
     </div>
-    <div id="menu-cl-refresh" style="font-size:12px;color:#cfe0ea;cursor:pointer;display:inline-flex;align-items:center;gap:5px" title="共有保存された最新データを読み込みます">🔄 最新データを読み込む<span id="menu-cl-status" style="color:#8fa4b5"></span></div>
   </div>
   <div class="tiles">
     <button class="tile summary" data-go="summary"><div class="t">▶ サマリー</div><div class="d">全店の通期 売上・粗利・営業利益</div></button>
@@ -419,44 +452,46 @@ function refreshFiscal(){
 
 // row layout for each store table (must be defined before buildTable runs)
 const DISPLAY=[
-  {type:"section",label:"【売上】"},
+  {type:"section",label:"売上"},
   {type:"in",k:"uriage",label:"売上高"},
-  {type:"kpi",f:"uriageInc",label:"売上高（先月比増額）",fmt:"yeninc"},
-  {type:"sub",f:"sales",label:"売上合計"},
-  {type:"section",label:"【変動費】"},
+  {type:"kpip",f:"uriageInc",label:"売上高（先月比）",fmt:"yeninc"},
+  {type:"sub",f:"sales",label:"売上合計",sep:1},
+  {type:"section",label:"変動費"},
   {type:"in",k:"genka",label:"商品原価"},
-  {type:"in",k:"tesuryo",label:"モール手数料"},
-  {type:"in",k:"point",label:"ポイント原資・クーポン"},
+  {type:"in",k:"tesuryoRate",label:"モール手数料率％",fmt:"rate"},
+  {type:"kpip",f:"tesuryo",label:"モール手数料",fmt:"yen"},
+  {type:"in",k:"point",label:"ポイント・クーポン"},
   {type:"in",k:"kessai",label:"決済手数料"},
-  {type:"in",k:"hasso",label:"発送費（配送実費）"},
-  {type:"in",k:"agency",label:"代理店運営手数料"},
-  {type:"sub",f:"vc",label:"変動費合計"},
+  {type:"in",k:"hasso",label:"発送費（実費）"},
+  {type:"in",k:"agency",label:"代理店・手数料"},
+  {type:"sub",f:"vc",label:"変動費合計",sep:1},
   {type:"gp",f:"gp",label:"粗利益"},
-  {type:"gp",f:"gpRate",label:"粗利率",fmt:"pct"},
-  {type:"section",label:"【広告・販促費】"},
-  {type:"in",k:"kokoku",label:"広告費（RPP/スポンサー/Y!広告等）"},
+  {type:"gp",f:"gpRate",label:"粗利率％",fmt:"pct",sep:1},
+  {type:"section",label:"広告・販促費"},
+  {type:"in",k:"kokoku",label:"広告費・RPP"},
   {type:"in",k:"promo",label:"その他販促費"},
-  {type:"sub",f:"ad",label:"広告販促費合計"},
+  {type:"sub",f:"ad",label:"広告販促費合計",sep:1},
   {type:"op",f:"op",label:"営業利益"},
-  {type:"op",f:"opRate",label:"営業利益率",fmt:"pct"},
-  {type:"op",f:"adRate",label:"広告費比率（対売上）",fmt:"pct"},
-  {type:"op",f:"roas",label:"ROAS（売上÷広告費）",fmt:"mult"},
-  {type:"section",label:"【参考指標】"},
-  {type:"kpi",f:"aov",label:"客単価（売上÷件数）",fmt:"yen"},
-  {type:"in",k:"kensu",label:"件数",fmt:"cnt"},
+  {type:"op",f:"opRate",label:"営業利益率％",fmt:"pct"},
+  {type:"op",f:"adRate",label:"広告費比率（売上高）",fmt:"pct"},
+  {type:"op",f:"roas",label:'ROAS<span class="tip" data-tip="売上÷広告費">？</span>',fmt:"mult",sep:1},
+  {type:"section",label:"参考指標"},
+  {type:"kpip",f:"aov",label:'客単価（店舗）<span class="tip" data-tip="売上高÷販売件数">？</span>',fmt:"yen"},
+  {type:"in",k:"kensu",label:"件数（全店舗）",fmt:"cnt"},
+  {type:"in",k:"access",label:"アクセス数（全店舗）",fmt:"cnt"},
+  {type:"kpip",f:"storeCvr",label:'転換率（全店舗）<span class="tip" data-tip="件数÷アクセス数">？</span>',fmt:"pct"},
   {type:"in",k:"fav",label:"お気に入り登録数",fmt:"cnt"},
   {type:"in",k:"review",label:"商品レビュー数",fmt:"cnt"},
-  {type:"kpi",f:"favInc",label:"お気に入り登録数（増加数）",fmt:"cnt"},
-  {type:"kpi",f:"reviewInc",label:"商品レビュー数（増加数）",fmt:"cnt"},
-  {type:"section",label:"【広告経由実績】"},
-  {type:"in",k:"av_uriage",label:"売上",fmt:"yen"},
-  {type:"in",k:"av_kensu",label:"売上件数",fmt:"cnt"},
-  {type:"in",k:"av_access",label:"アクセス人数",fmt:"cnt"},
-  {type:"kpi",f:"avCvr",label:"転換率（件数÷アクセス）",fmt:"pct"},
-  {type:"kpi",f:"avAov",label:"客単価（売上÷売上件数）",fmt:"yen"},
-  {type:"in",k:"av_kokoku",label:"広告費",fmt:"yen"},
-  {type:"kpi",f:"avAdRate",label:"広告費率（広告費÷売上）",fmt:"pct"},
-  {type:"kpi",f:"avRoas",label:"ROAS（売上÷広告費）",fmt:"mult"},
+  {type:"kpin",f:"favInc",label:"お気に入り（増数）",fmt:"cnt"},
+  {type:"kpin",f:"reviewInc",label:"商品レビュー（増数）",fmt:"cnt",sep:1},
+  {type:"section",label:"広告経由実績"},
+  {type:"in",k:"av_uriage",label:"売上（広告）",fmt:"yen"},
+  {type:"in",k:"av_kensu",label:"売上件数（広告）",fmt:"cnt"},
+  {type:"in",k:"av_access",label:"アクセス人数（広告）",fmt:"cnt"},
+  {type:"kpip",f:"avCvr",label:'転換率（広告）<span class="tip" data-tip="販売件数÷アクセス">？</span>',fmt:"pct"},
+  {type:"kpip",f:"avAov",label:'客単価（広告）<span class="tip" data-tip="広告売上÷広告販売売上件数">？</span>',fmt:"yen"},
+  {type:"kpip",f:"avAdRate",label:'広告費率<span class="tip" data-tip="広告費÷売上">？</span>',fmt:"pct"},
+  {type:"kpip",f:"avRoas",label:'ROAS（広告）<span class="tip" data-tip="売上÷広告費">？</span>',fmt:"mult",sep:1},
 ];
 
 // ===== charts (dependency-free SVG) & analysis =====
@@ -480,7 +515,7 @@ const METRICS=[
   {key:"point",label:"ポイント・クーポン",kind:"yen",raw:1},
   {key:"kessai",label:"決済手数料",kind:"yen",raw:1},
   {key:"hasso",label:"発送費",kind:"yen",raw:1},
-  {key:"agency",label:"代理店運営手数料",kind:"yen",raw:1},
+  {key:"agency",label:"代理店・手数料",kind:"yen",raw:1},
   {key:"kokoku",label:"広告費",kind:"yen",raw:1},
   {key:"promo",label:"その他販促費",kind:"yen",raw:1},
   {key:"gpRate",label:"粗利率",kind:"pct"},
@@ -601,11 +636,11 @@ function drawStoreCharts(sid){
   const a=annual(sid),raw=k=>sum(data[sid][k]);
   renderDonut(document.getElementById("ch-mix-"+sid),[
     {label:"商品原価",value:raw("genka"),color:"#8a5a00"},
-    {label:"モール手数料",value:raw("tesuryo"),color:"#d97706"},
+    {label:"モール手数料",value:a.tesuryo,color:"#d97706"},
     {label:"ポイント・クーポン",value:raw("point"),color:"#c99700"},
     {label:"決済手数料",value:raw("kessai"),color:"#9c6b1e"},
     {label:"発送費",value:raw("hasso"),color:"#5b6270"},
-    {label:"代理店運営手数料",value:raw("agency"),color:"#7a3ea1"},
+    {label:"代理店・手数料",value:raw("agency"),color:"#7a3ea1"},
     {label:"広告販促費",value:a.ad,color:"#bf1722"},
     {label:"営業利益",value:a.op,color:"#0f766e"},
   ],"yen");
@@ -624,6 +659,7 @@ STORES.forEach(s=>{
       <button class="btn edit-only" data-import="${s.id}">CSV取込</button>
       <button class="btn" data-csv="${s.id}">この店舗をCSV書き出し</button>
       <button class="btn" data-tpl="${s.id}">取込テンプレCSV</button>
+      <button class="btn btn-cloud" data-cloud="${s.id}">🔄 最新データを読み込む</button>
       <button class="btn warn edit-only" data-clear="${s.id}">この店舗を全消去</button>
     </div>
     <div class="sheet-head">
@@ -643,6 +679,7 @@ STORES.forEach(s=>{
   pg.querySelector("[data-import]").onclick=()=>openImport(s.id);
   pg.querySelector("[data-csv]").onclick=()=>exportStore(s.id);
   pg.querySelector("[data-tpl]").onclick=()=>downloadTemplate(s.id);
+  {const cb=pg.querySelector("[data-cloud]"); if(cb)cb.onclick=()=>cloudLoad(true);}
   pg.querySelector("[data-clear]").onclick=()=>clearStore(s.id);
   buildTable(s.id);
 });
@@ -654,7 +691,7 @@ function buildTable(sid){
     if(row.type==="section"){
       h+=`<tr class="section"><td class="rowlabel">${row.label}</td>`+MONTHS.map(()=>"<td></td>").join("")+"<td></td></tr>";return;
     }
-    h+=`<tr class="${row.type}"><td class="rowlabel">${row.label}</td>`;
+    h+=`<tr class="${row.type}${row.sep?' sepline':''}"><td class="rowlabel">${row.label}</td>`;
     for(let m=0;m<12;m++){
       if(row.type==="in"){
         h+=`<td class="inp"><input inputmode="numeric" data-s="${sid}" data-k="${row.k}" data-m="${m}"></td>`;
@@ -678,7 +715,7 @@ function buildTable(sid){
 }
 
 function onInput(e){
-  const i=e.target;const v=parseFloat(String(i.value).replace(/[¥￥,\s　件]/g,""))||0;
+  const i=e.target;const v=parseFloat(String(i.value).replace(/[¥￥,\s　件%％]/g,""))||0;
   data[i.dataset.s][i.dataset.k][+i.dataset.m]=v;
   persist();recalc(i.dataset.s);
 }
@@ -703,7 +740,7 @@ function recalc(sid){
   const a=annual(sid);
   document.querySelectorAll(`#tb-${sid} [data-tot="${sid}"]`).forEach(td=>{
     const f=td.dataset.f;let val;
-    if(td.dataset.type==="in"){val=sum(data[sid][f]);}
+    if(td.dataset.type==="in"){ val = (f==="tesuryoRate") ? (a.sales?(a.tesuryo/a.sales*100):0) : sum(data[sid][f]); }
     else{val=a[f];}
     td.textContent=fmtBy(td.dataset.fmt,val);colorCell(td,td.dataset.fmt,val,f);
   });
@@ -712,7 +749,7 @@ function recalc(sid){
   ro.textContent=yen(a.op);ro.className="val "+(a.op>0?"pos":a.op<0?"neg":"");
   drawStoreCharts(sid);
 }
-function fmtBy(fmt,v){return fmt==="pct"?pct(v):fmt==="mult"?mult(v):fmt==="yeninc"?yenInc(v):fmt==="cnt"?(Math.round(v||0).toLocaleString("ja-JP")+"件"):yen(v);}
+function fmtBy(fmt,v){return fmt==="pct"?pct(v):fmt==="rate"?(v?(Number(v).toFixed(1)+"%"):"–"):fmt==="mult"?mult(v):fmt==="yeninc"?yenInc(v):fmt==="cnt"?(Math.round(v||0).toLocaleString("ja-JP")+"件"):yen(v);}
 function colorCell(td,fmt,v,f){
   td.classList.remove("pos","neg");
   if((f==="op"||f==="gp")&&fmt==="yen"){ if(v>0)td.classList.add("pos"); else if(v<0)td.classList.add("neg"); }
@@ -723,7 +760,10 @@ function colorCell(td,fmt,v,f){
 // summary page
 const sp=document.createElement("section");sp.className="page";sp.id="pg-summary";
 sp.innerHTML=`
-  <span class="back" data-go="menu">◀ メニューに戻る</span>
+  <div class="tools" style="align-items:center">
+    <span class="back" data-go="menu" style="margin:0">◀ メニューに戻る</span>
+    <button class="btn btn-cloud" id="sum-cloud">🔄 最新データを読み込む</button>
+  </div>
   <h2 style="margin:6px 0 4px">全店舗サマリー</h2>
   <div id="sum-period" style="font-size:12px;color:var(--muted);margin-bottom:10px"></div>
   <div style="display:flex;gap:8px;align-items:center;margin-bottom:14px;flex-wrap:wrap">
@@ -736,6 +776,7 @@ sp.innerHTML=`
   <div class="tools"><button class="btn edit-only" id="allimport">全店舗一括CSV取込</button><button class="btn" id="allcsv">全店まとめてCSV書き出し</button></div>`;
 main.appendChild(sp);
 sp.querySelector("[data-go]").onclick=()=>show("menu");
+{const cb=sp.querySelector("#sum-cloud"); if(cb)cb.onclick=()=>cloudLoad(true);}
 sp.querySelector("#allcsv").onclick=exportAll;
 sp.querySelector("#allimport").onclick=()=>openImport(null);
 sp.querySelector("#sum-mode").onchange=renderSummary;
@@ -808,8 +849,8 @@ function renderAnalysis(){
     const pre=Array.from({length:12},(_,m)=>STORES.reduce((t,s)=>t+valMD(prev,s.id,m,meta),0));
     const cs=cur.reduce((a,b)=>a+b,0), ps=pre.reduce((a,b)=>a+b,0);
     const yoy=(c,p)=>p>0?((c-p)/p*100).toFixed(1)+"%":"–";
-    let h=`<table><thead><tr><th style="text-align:left;position:sticky;left:0;background:var(--ink);color:#fff">区分</th>`+
-      MONTHS.map(m=>`<th style="background:var(--ink);color:#fff">${m}</th>`).join("")+`<th style="background:var(--ink);color:#fff">通期</th></tr></thead><tbody>`;
+    let h=`<table><thead><tr><th style="text-align:left;position:sticky;left:0;background:var(--line-green);color:#fff">区分</th>`+
+      MONTHS.map(m=>`<th style="background:var(--line-green);color:#fff">${m}</th>`).join("")+`<th style="background:var(--line-green);color:#fff">通期</th></tr></thead><tbody>`;
     h+=`<tr><td class="rowlabel">今年</td>`+cur.map(v=>`<td class="num">${fmt(v)}</td>`).join("")+`<td class="total">${fmt(cs)}</td></tr>`;
     h+=`<tr><td class="rowlabel">前年</td>`+pre.map(v=>`<td class="num">${fmt(v)}</td>`).join("")+`<td class="total">${fmt(ps)}</td></tr>`;
     h+=`<tr class="sub"><td class="rowlabel">前年比</td>`+cur.map((v,i)=>`<td class="num">${yoy(v,pre[i])}</td>`).join("")+`<td class="total">${yoy(cs,ps)}</td></tr>`;
@@ -817,8 +858,8 @@ function renderAnalysis(){
     tw.innerHTML=h;
     return;
   }
-  let h=`<table><thead><tr><th style="text-align:left;position:sticky;left:0;background:var(--ink);color:#fff">店舗</th>`+
-    MONTHS.map(m=>`<th style="background:var(--ink);color:#fff">${m}</th>`).join("")+`<th style="background:var(--ink);color:#fff">通期</th></tr></thead><tbody>`;
+  let h=`<table><thead><tr><th style="text-align:left;position:sticky;left:0;background:var(--line-green);color:#fff">店舗</th>`+
+    MONTHS.map(m=>`<th style="background:var(--line-green);color:#fff">${m}</th>`).join("")+`<th style="background:var(--line-green);color:#fff">通期</th></tr></thead><tbody>`;
   STORES.forEach(s=>{
     h+=`<tr><td class="rowlabel" style="min-width:120px">${s.name}</td>`;
     for(let m=0;m<12;m++)h+=`<td class="num">${fmt(valM(s.id,m,meta))}</td>`;
@@ -902,7 +943,7 @@ man.innerHTML=`
       <h3>手入力する項目（NEでは取得不可）</h3>
       <ul>
         <li>広告費：楽天RPP / Amazonスポンサー / Yahoo!広告 等の管理画面の月額実績。</li>
-        <li>発送費（配送実費）：配送会社の月次請求額。</li>
+        <li>発送費（実費）：配送会社の月次請求額。</li>
         <li>決済手数料：各モール／決済代行の明細（モール手数料に含む場合は二重計上に注意）。</li>
         <li>その他販促費：メルマガ・アフィリ・制作費など。</li>
       </ul>
@@ -910,13 +951,6 @@ man.innerHTML=`
       <p>売上合計＝売上高 ／ 変動費合計＝原価＋手数料＋ポイント＋決済手数料＋発送費＋代理店運営手数料</p>
       <p>列は決算期の12か月です（既定：2026年7月〜2027年6月）。メニュー上部の「決算期の開始」で年・月を変えると全ページの見出しが切り替わります。</p>
       <p>粗利益＝売上合計−変動費合計 ／ 営業利益＝粗利益−広告販促費合計</p>
-      <h3>このページを公開URLにする方法</h3>
-      <p>このHTMLファイル1つで完結しています。次のいずれかにアップロードすると公開URLになります：</p>
-      <ul>
-        <li><b>GitHub Pages</b>：リポジトリに置いて Pages を有効化（無料）。</li>
-        <li><b>Netlify / Vercel / Cloudflare Pages</b>：ファイルをドラッグ＆ドロップで即公開（無料枠あり）。</li>
-        <li><b>Googleサイト / 自社サーバー</b>：HTMLとして配置。</li>
-      </ul>
     </div>
   </div>
   <div id="man-csv" style="display:none">
@@ -1009,17 +1043,18 @@ function clearStore(sid){
 const FIELD_SYN=[
   ["uriage",["売上高","売上金額","商品売上","商品代金","商品合計","商品小計","商品計","販売金額","販売価格","受注金額","総売上","売上"]],
   ["genka",["商品原価","仕入原価","原価金額","仕入金額","仕入額","原価","仕入"]],
-  ["tesuryo",["モール手数料","落札手数料","システム利用料","システム手数料","販売手数料","出店料","モール利用料","手数料"]],
+  ["tesuryoRate",["モール手数料率","手数料率","モール手数料％","モール手数料%"]],
   ["point",["ポイント原資","利用ポイント","ポイント","クーポン利用","クーポン","値引き","値引","割引"]],
   ["kessai",["決済手数料","代引手数料","決済"]],
   ["hasso",["発送代行手数料","出荷手数料","発送費","送料原価","配送費","配送料","物流費"]],
-  ["agency",["代理店運営手数料","代理店運営費","代理店手数料","運営手数料","代理店"]],
+  ["agency",["代理店・手数料","代理店運営手数料","代理店運営費","代理店手数料","運営手数料","代理店"]],
   ["kokoku",["広告宣伝費","スポンサープロダクト","広告費用","広告費","広告料","ＲＰＰ","RPP","スポンサー","広告"]],
   ["promo",["その他販促費","アフィリエイト費","モールプロモーション","販促費","アフィリエイト","アフィリ","販促"]],
   ["kensu",["受注件数","注文件数","販売件数","出荷件数","注文数","受注数","出荷数","件数"]],
   ["fav",["お気に入り登録数","お気に入り数","フォロー数","お気に入り"]],
   ["review",["商品レビュー数","レビュー件数","レビュー数","評価数","レビュー"]],
   ["av_access",["アクセス人数","アクセス数","訪問者数","訪問数","セッション数"]],
+  ["access",["アクセス数","総アクセス数","閲覧数","PV","ページビュー","アクセス"]],
 ];
 const FIELD_LABEL=Object.fromEntries(INPUTS.map(r=>[r.k,r.label]));
 function parseCSV(text){
@@ -1163,7 +1198,7 @@ function handleFiles(fileList){
   });
 }
 // ===== manual column mapping (全店舗一括の追加設定) =====
-const MAPOPTS=[["","未使用"],["__store","店舗"],["__month","年月・日付"],["uriage","売上高"],["genka","商品原価"],["tesuryo","モール手数料"],["point","ポイント・クーポン"],["kessai","決済手数料"],["hasso","発送費"],["agency","代理店運営手数料"],["kokoku","広告費"],["promo","その他販促費"],["kensu","件数"],["fav","お気に入り登録数"],["review","商品レビュー数"],["av_uriage","広告経由 売上"],["av_kensu","広告経由 売上件数"],["av_access","アクセス人数"],["av_kokoku","広告経由 広告費"]];
+const MAPOPTS=[["","未使用"],["__store","店舗"],["__month","年月・日付"],["uriage","売上高"],["genka","商品原価"],["tesuryoRate","モール手数料率％"],["point","ポイント・クーポン"],["kessai","決済手数料"],["hasso","発送費"],["agency","代理店・手数料"],["kokoku","広告費"],["promo","その他販促費"],["kensu","件数"],["access","アクセス数"],["fav","お気に入り登録数"],["review","商品レビュー数"],["av_uriage","広告経由 売上"],["av_kensu","広告経由 売上件数"],["av_access","アクセス人数"],["av_kokoku","広告経由 広告費"]];
 function guessMap(h,sampleVal){
   const f=detectField(h); if(f)return f;
   if(/店舗|ショップ|モール|shop|store|ストア|販売店/i.test(h))return "__store";
